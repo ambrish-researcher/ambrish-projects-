@@ -1,0 +1,44 @@
+import math
+import time
+
+class PatrolRobot:
+    def __init__(self, start):
+        self.position = start
+        self.waypoints = []
+        self.log_file = "patrol_log.txt"
+
+    def add_waypoint(self, point):
+        self.waypoints.append(point)
+
+    def check_for_obstacle(self, target):
+        return False
+
+    def move_to(self, target):
+        print(f"Moving from {self.position} to {target}")
+
+        if self.check_for_obstacle(target):
+            print("Obstacle detected! Replanning path...")
+            return False
+
+        self.position = target
+        self.record_log(target)
+        return True
+
+    def record_log(self, point):
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        with open(self.log_file, "a") as f:
+            f.write(f"[{timestamp}] Visited {point}\n")
+        print(f"Logged: [{timestamp}] {point}")
+
+robot = PatrolRobot(start=(0, 0))
+
+robot.add_waypoint((2, 1))
+robot.add_waypoint((4, 3))
+robot.add_waypoint((5, 0))
+
+for wp in robot.waypoints:
+    success = robot.move_to(wp)
+    if not success:
+        print("Obstacle stopped the robot.")
+
+robot.move_to((0, 0))
